@@ -1,4 +1,8 @@
-import { HttpStatus, Injectable, InternalServerErrorException } from "@nestjs/common";
+import {
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { CreatePetDto } from './dto/create-pet.dto';
 import { UpdatePetDto } from './dto/update-pet.dto';
 import { Repository } from 'typeorm';
@@ -42,8 +46,24 @@ export class PetsService {
     //return 'This action adds a new pet';
   }
 
-  findAll() {
-    return `This action returns all pets`;
+  async findAll(userId: string) {
+    const userPets = await this.petsRepository.find({
+      relations: {
+        petPhotos: true,
+        species: true,
+        bread: true,
+      },
+      where: {
+        user: { id: userId },
+      },
+    });
+    return {
+      code: HttpStatus.OK,
+      message: 'Success',
+      data: {
+        pets: userPets,
+      },
+    };
   }
 
   findOne(id: number) {

@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { Pet } from '../pets/entities/pet.entity';
+import * as bcrypt from 'bcrypt';
 
 export type UserMock = any;
 
@@ -37,7 +38,8 @@ export class UsersService {
     const user = new User();
     user.username = createUserDto.username;
     user.email = createUserDto.email;
-    user.password = createUserDto.password;
+    const salt = bcrypt.genSaltSync(10);
+    user.password = bcrypt.hashSync(createUserDto.password, salt);
     user.googleId = createUserDto.google_id;
     user.appleId = createUserDto.apple_id;
     user.facebookId = createUserDto.facebook_id;

@@ -10,9 +10,10 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CommonService } from './common.service';
 import { AuthGuard } from '../auth/auth.guard';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
 @Controller('common')
+@ApiTags('common')
 export class CommonController {
   constructor(private commonService: CommonService) {}
   @ApiBearerAuth()
