@@ -33,7 +33,6 @@ export class AuthController {
     return this.authService.signIn(signInDto);
   }
 
-  @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Register User' })
   @Post('register')
   register(@Body() createUserDto: CreateUserDto) {

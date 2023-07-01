@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -54,7 +59,7 @@ export class UsersService {
 
   async findOne(email: string): Promise<User | undefined> {
     return await this.usersRepository.findOne({
-      where: { email: email },
+      where: { email: email, isDeleted: false },
       relations: {
         pets: {
           species: true,
@@ -65,11 +70,55 @@ export class UsersService {
     });
   }
 
+
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    const user = await this.usersRepository.findOne({
+      where: {
+        id: id,
+        isDeleted: false,
+        isVerified: true,
+      },
+    });
+    if (user != null) {
+      user.isDeleted = true;
+      const updatedUser = await this.usersRepository.save(user);
+      if (updatedUser != null) {
+        return {
+          code: HttpStatus.OK,
+          message: 'Success',
+        };
+      } else {
+        throw new InternalServerErrorException();
+      }
+    } else {
+      throw new UnauthorizedException();
+    }
+  }
+
+  async setVerifyUser(id: string) {
+    const user = await this.usersRepository.findOne({
+      where: {
+        id: id,
+        isDeleted: false,
+      },
+    });
+    if (user != null) {
+      user.isVerified = true;
+      const updated = await this.usersRepository.save(user);
+      if (updated != null) {
+        return {
+          code: HttpStatus.OK,
+          message: 'Success',
+        };
+      } else {
+        throw new InternalServerErrorException();
+      }
+    } else {
+      throw new UnauthorizedException();
+    }
   }
 }

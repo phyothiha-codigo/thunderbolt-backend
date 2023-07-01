@@ -1,39 +1,26 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  InternalServerErrorException,
-  Param,
-  Patch,
-  Post,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Delete, Post, Request, UseGuards } from "@nestjs/common";
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '../auth/auth.guard';
-import { ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('users')
 @ApiTags('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // @HttpCode(HttpStatus.CREATED)
-  // @Post('register')
-  // async create(@Body() createUserDto: CreateUserDto) {
-  //   return await this.usersService.create(createUserDto);
-  // }
+  @Delete('deleteUser')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'Delete User' })
+  async create(@Request() req) {
+    return await this.usersService.remove(req.user.sub);
+  }
 
   // @Get()
   // findAll() {
   //   return this.usersService.findAll();
   // }
-  
+
   //
   // @Get(':id')
   // findOne(@Param('id') id: string) {

@@ -31,6 +31,10 @@ export class User {
   profileUrl: string;
   @OneToMany(() => Pet, (pet) => pet.user)
   pets: Pet[];
+  @Column({ name: 'biometric_token', nullable: true })
+  biometricToken: string;
+  @Column({ name: 'is_verified', default: false })
+  isVerified: boolean;
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamp',

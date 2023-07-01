@@ -20,7 +20,7 @@ export class PetsService {
   ) {}
   async create(createPetDto: CreatePetDto, email: string) {
     const user = await this.usersRepository.findOne({
-      where: { email: email },
+      where: { email: email, isDeleted: false, isVerified: true },
     });
     if (user != null) {
       const newPet = new Pet();
