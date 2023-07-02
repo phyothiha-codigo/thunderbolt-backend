@@ -8,28 +8,15 @@ services:
       - '3000:3000'
     environment:
       - DATABASE_TYPE=mysql
-      - DATABASE_USERNAME=root
-      - DATABASE_PASSWORD=test001$
-      - DATABASE_NAME=thunderbolt_local
+      - DATABASE_USERNAME=admin
+      - DATABASE_PASSWORD=thunderbolt001
+      - DATABASE_NAME=thunderbolt_dev
       - DATABASE_PORT=3306
-      - DATABASE_HOST=db
+      - DATABASE_HOST=thunderbolt-db.cdiydtaeuqms.ap-southeast-1.rds.amazonaws.com
       - REDIS_HOST=redis-server
       - REDIS_PORT=6379
     depends_on:
-      - db
       - redis-server
-  db:
-    container_name: db
-    image: mysql:8.0.33
-    environment:
-      MYSQL_DATABASE: thunderbolt_local
-      MYSQL_ROOT_PASSWORD: test001$
-    ports:
-      - '3306:3306'
-    expose:
-      - '3306'
-    volumes:
-      - my-db:/var/lib/docker/mysql/data
   redis-server:
     image: redis:7.2-rc2
     container_name: redis-server

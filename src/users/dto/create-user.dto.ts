@@ -38,8 +38,28 @@ export class CreateUserDto {
   })
   profile_url?: string;
   @ApiProperty({
-    example: Pet,
+    example: {
+      username: 'John Doe',
+      email: 'test1@yopmail.com',
+      password: 'abc123',
+      profile_url: 'https://www.image.com/img.jpg',
+      pets: [
+        {
+          name: 'test',
+          age: 1,
+          color: 'red',
+          description: 'test',
+          species: {
+            id: '68a0d09c-1553-46bc-b682-3569097bbf5d',
+          },
+          bread: {
+            id: 'f21741e5-0582-4204-8bbd-e213ca6bb53f',
+          },
+        },
+      ],
+    },
     description: 'The pets of user',
+    type: Pet,
   })
   pets: Pet[] | [];
 }

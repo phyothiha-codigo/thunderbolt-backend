@@ -17,7 +17,6 @@ export class SpeciesController {
   }
 
   @Get('getAlSpecies')
-  @UseGuards(AuthGuard)
   findAll() {
     return this.speciesService.findAll();
   }

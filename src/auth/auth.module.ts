@@ -8,12 +8,12 @@ import { RedisModule } from '../redis/redis.module';
 
 @Module({
   imports: [
-    UsersModule,
     RedisModule,
+    UsersModule,
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '6000h' },
+      signOptions: { expiresIn: '1h' },
     }),
   ],
   controllers: [AuthController],

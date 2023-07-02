@@ -17,13 +17,11 @@ export class BreadsController {
   constructor(private readonly breadsService: BreadsService) {}
 
   @Post('createBread')
-  @UseGuards(AuthGuard)
   create(@Body() createBreadDto: CreateBreadDto) {
     return this.breadsService.create(createBreadDto);
   }
 
   @Get('getAllBreads')
-  @UseGuards(AuthGuard)
   findAll() {
     return this.breadsService.findAll();
   }

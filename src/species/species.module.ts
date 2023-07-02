@@ -4,9 +4,10 @@ import { SpeciesController } from './species.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Species } from './entities/species.entity';
 import { UsersModule } from "../users/users.module";
+import { RedisModule } from "../redis/redis.module";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Species]), UsersModule],
+  imports: [RedisModule,TypeOrmModule.forFeature([Species]), UsersModule],
   controllers: [SpeciesController],
   providers: [SpeciesService],
 })

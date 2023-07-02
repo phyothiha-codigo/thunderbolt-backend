@@ -46,4 +46,13 @@ export class AuthController {
   getProfile(@Request() req): Promise<any> {
     return this.authService.getUser(req.user.email);
   }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Post('logout')
+  @ApiOperation({ summary: 'Logout User' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  logout(@Request() req): Promise<any> {
+    return this.authService.logout(req.user.sub);
+  }
 }

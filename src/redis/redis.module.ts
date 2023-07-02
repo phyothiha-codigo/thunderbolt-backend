@@ -5,9 +5,11 @@ import { CacheModule } from '@nestjs/common/cache';
 import { RedisClientOptions } from 'redis';
 import { redisStore } from 'cache-manager-redis-yet';
 import * as process from 'process';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ envFilePath: '.env' }),
     CacheModule.register<RedisClientOptions>({
       isGlobal: true,
       store: redisStore,
