@@ -18,6 +18,7 @@ import { CommonModule } from './common/common.module';
 import { BiometricModule } from './biometric/biometric.module';
 import { RedisModule } from './redis/redis.module';
 import { OtpModule } from './otp/otp.module';
+import { MarketplaceModule } from './marketplace/marketplace.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { OtpModule } from './otp/otp.module';
     BiometricModule,
     RedisModule,
     OtpModule,
+    MarketplaceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -13,7 +13,8 @@ import { PetsService } from './pets.service';
 import { CreatePetDto } from './dto/create-pet.dto';
 import { UpdatePetDto } from './dto/update-pet.dto';
 import { AuthGuard } from '../auth/auth.guard';
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ListadoptionDto } from './dto/listadoption-dto';
 
 @Controller('pets')
 @ApiTags('pets')
@@ -32,6 +33,15 @@ export class PetsController {
   @ApiBearerAuth()
   findAll(@Request() req) {
     return this.petsService.findAll(req.user.sub);
+  }
+  @Post('listForAdoption')
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  listForAdption(@Request() req, @Body() listForAdoptionDto: ListadoptionDto) {
+    return this.petsService.listMyPetForAdoption(
+      req.user.sub,
+      listForAdoptionDto.petId,
+    );
   }
 
   // @Get(':id')

@@ -31,4 +31,12 @@ export class BiometricController {
   loginBiometric(@Body() req: CreateBiometricDto) {
     return this.biometricService.loginBiometric(req.biometric_token);
   }
+
+  @Delete('removeBiometric')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'Remove User Biometric' })
+  removeBiometric(@Request() req) {
+    return this.biometricService.removeBiometric(req.user.sub);
+  }
 }

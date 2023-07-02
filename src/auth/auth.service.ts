@@ -101,6 +101,10 @@ export class AuthService {
     return jwt;
   }
 
+  async checkIfUserVerified(id: string) {
+    return await this.usersService.isVerified(id);
+  }
+
   async logout(id: string) {
     const userOldToken = await this.redisService.get(`token_${id}`);
     if (userOldToken != null) {
