@@ -4,9 +4,10 @@ import { BreadsController } from './breads.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Bread } from './entities/bread.entity';
 import { UsersModule } from "../users/users.module";
+import { RedisModule } from "../redis/redis.module";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Bread]), UsersModule],
+  imports: [RedisModule,TypeOrmModule.forFeature([Bread]), UsersModule],
   controllers: [BreadsController],
   providers: [BreadsService],
 })

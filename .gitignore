@@ -2,6 +2,12 @@
 /dist
 /node_modules
 /.build
+.env
+.env.prod
+docker-compose.yml
+docker-compose-prod.yml
+.aws
+.idea
 
 # Logs
 logs

@@ -4,10 +4,16 @@ import { BiometricController } from './biometric.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { AuthModule } from '../auth/auth.module';
-import { UsersModule } from "../users/users.module";
+import { UsersModule } from '../users/users.module';
+import { RedisModule } from '../redis/redis.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), AuthModule, UsersModule],
+  imports: [
+    RedisModule,
+    TypeOrmModule.forFeature([User]),
+    AuthModule,
+    UsersModule,
+  ],
   controllers: [BiometricController],
   providers: [BiometricService],
 })

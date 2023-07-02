@@ -17,6 +17,7 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private redisService: RedisService,
   ) {}
 
   async signIn(signInDto: SignInDto): Promise<any> {
@@ -32,7 +33,7 @@ export class AuthService {
             code: HttpStatus.OK,
             message: 'Success',
             data: {
-              access_token: await this.jwtService.signAsync(payload),
+              access_token: await this.generateJWT(payload),
             },
           };
         } else {
@@ -41,7 +42,7 @@ export class AuthService {
             code: HttpStatus.UNAUTHORIZED,
             message: 'User not verified yet. Otp Sent',
             data: {
-              session_token: await this.jwtService.signAsync(payload),
+              session_token: await this.generateJWT(payload),
             },
           };
         }
@@ -86,7 +87,30 @@ export class AuthService {
   }
 
   async generateJWT(data: { sub: string; email: string }) {
-    return await this.jwtService.signAsync(data);
+    const userOldToken = await this.redisService.get(`token_${data.sub}`);
+    if (userOldToken != null) {
+      await this.redisService.delete(`token_${data.sub}`);
+      await this.redisService.set(
+        `black_list_token_${data.sub}`,
+        userOldToken,
+        0,
+      );
+    }
+    const jwt = await this.jwtService.signAsync(data);
+    await this.redisService.set(`token_${data.sub}`, jwt, 3600000);
+    return jwt;
+  }
+
+  async logout(id: string) {
+    const userOldToken = await this.redisService.get(`token_${id}`);
+    if (userOldToken != null) {
+      await this.redisService.delete(`token_${id}`);
+      await this.redisService.set(`black_list_token_${id}`, userOldToken, 0);
+    }
+    return {
+      code: HttpStatus.OK,
+      message: 'Success',
+    };
   }
 
   private generateRandomNumber() {
