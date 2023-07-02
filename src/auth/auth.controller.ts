@@ -13,11 +13,14 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import {
   ApiBearerAuth,
+  ApiOkResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
+  getSchemaPath,
 } from '@nestjs/swagger';
 import { User } from '../users/entities/user.entity';
+import { SignInDto } from './sign_in.dto';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
@@ -26,11 +29,10 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Login User' })
   @Post('login')
-  signIn(@Body() signInDto: Record<string, any>) {
-    return this.authService.signIn(signInDto.email, signInDto.password);
+  signIn(@Body() signInDto: SignInDto) {
+    return this.authService.signIn(signInDto);
   }
 
-  @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Register User' })
   @Post('register')
   register(@Body() createUserDto: CreateUserDto) {

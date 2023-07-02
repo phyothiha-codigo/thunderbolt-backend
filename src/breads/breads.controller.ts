@@ -3,40 +3,43 @@ import {
   Get,
   Post,
   Body,
-  Patch,
-  Param,
-  Delete,
+
+  UseGuards,
 } from '@nestjs/common';
 import { BreadsService } from './breads.service';
 import { CreateBreadDto } from './dto/create-bread.dto';
-import { UpdateBreadDto } from './dto/update-bread.dto';
+import { ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('breads')
+@ApiTags('breads')
 export class BreadsController {
   constructor(private readonly breadsService: BreadsService) {}
 
-  @Post()
+  @Post('createBread')
+  @UseGuards(AuthGuard)
   create(@Body() createBreadDto: CreateBreadDto) {
     return this.breadsService.create(createBreadDto);
   }
 
-  @Get()
+  @Get('getAllBreads')
+  @UseGuards(AuthGuard)
   findAll() {
     return this.breadsService.findAll();
   }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.breadsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBreadDto: UpdateBreadDto) {
-    return this.breadsService.update(+id, updateBreadDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.breadsService.remove(+id);
-  }
+  //
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.breadsService.findOne(+id);
+  // }
+  //
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateBreadDto: UpdateBreadDto) {
+  //   return this.breadsService.update(+id, updateBreadDto);
+  // }
+  //
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.breadsService.remove(+id);
+  // }
 }

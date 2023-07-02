@@ -15,6 +15,9 @@ import { AuthModule } from './auth/auth.module';
 import { DataSource } from 'typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CommonModule } from './common/common.module';
+import { BiometricModule } from './biometric/biometric.module';
+import { RedisModule } from './redis/redis.module';
+import { OtpModule } from './otp/otp.module';
 
 @Module({
   imports: [
@@ -35,22 +38,15 @@ import { CommonModule } from './common/common.module';
       }),
       inject: [ConfigService],
     }),
-    // TypeOrmModule.forRoot({
-    //   type: 'mysql',
-    //   host: '127.0.0.1',
-    //   port: 3306,
-    //   username: 'root',
-    //   password: 'test001$',
-    //   database: 'thunderbolt_local',
-    //   entities: [User, Pet, PetImages, Species, Bread],
-    //   synchronize: true,
-    // }),
     UsersModule,
     PetsModule,
     SpeciesModule,
     BreadsModule,
     AuthModule,
     CommonModule,
+    BiometricModule,
+    RedisModule,
+    OtpModule,
   ],
   controllers: [AppController],
   providers: [AppService],

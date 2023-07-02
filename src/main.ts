@@ -13,12 +13,14 @@ async function bootstrap() {
     .setDescription('The Thunderbolt API description')
     .setVersion('1.0')
     .addTag('Thunderbolt')
+    .addBearerAuth()
     .build();
   const options: SwaggerDocumentOptions = {
     operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
   };
   const document = SwaggerModule.createDocument(app, config, options);
   SwaggerModule.setup('docs', app, document);
-  await app.listen(3000);
+  const port = process.env.port || 3000;
+  await app.listen(port);
 }
 bootstrap();
