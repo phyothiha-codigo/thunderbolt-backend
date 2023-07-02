@@ -4,13 +4,14 @@ import { RedisController } from './redis.controller';
 import { CacheModule } from '@nestjs/common/cache';
 import { RedisClientOptions } from 'redis';
 import { redisStore } from 'cache-manager-redis-yet';
+import * as process from 'process';
 
 @Module({
   imports: [
     CacheModule.register<RedisClientOptions>({
       isGlobal: true,
       store: redisStore,
-      url: 'redis://localhost:6379',
+      url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
     }),
   ],
   controllers: [RedisController],

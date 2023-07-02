@@ -1,0 +1,51 @@
+version: '3.9'
+services:
+  nestapp:
+    container_name: nestapp
+    image: phyothiha889/thunderbolt:latest
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      - DATABASE_TYPE=mysql
+      - DATABASE_USERNAME=root
+      - DATABASE_PASSWORD=test001$
+      - DATABASE_NAME=thunderbolt_local
+      - DATABASE_PORT=3306
+      - DATABASE_HOST=db
+      - REDIS_HOST=redis-server
+      - REDIS_PORT=6379
+    depends_on:
+      - db
+      - redis-server
+    networks:
+      - nestjs_network
+  db:
+    container_name: db
+    image: mysql:8.0.33
+    environment:
+      MYSQL_DATABASE: thunderbolt_local
+      MYSQL_ROOT_PASSWORD: test001$
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - my-db:/var/lib/docker/mysql/data
+  redis-server:
+    image: redis:7.2-rc2
+    container_name: redis-server
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis-service/config/redis.conf:/redis.conf
+      # - ./redis-data:/redis.conf
+    command: [ "redis-server", "/redis.conf" ]
+    networks:
+      - nestjs_network
+volumes:
+  my-db: {}
+  redis-data:
+networks:
+  nestjs_network:
+    driver: bridge

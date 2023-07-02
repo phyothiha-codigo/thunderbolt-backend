@@ -12,7 +12,6 @@ export class SpeciesController {
 
   @Post('createNewSpecies')
   @HttpCode(HttpStatus.CREATED)
-  @UseGuards(AuthGuard)
   create(@Body() createSpeciesDto: CreateSpeciesDto) {
     return this.speciesService.create(createSpeciesDto);
   }
