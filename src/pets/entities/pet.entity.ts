@@ -13,6 +13,9 @@ import { User } from '../../users/entities/user.entity';
 import { PetImages } from './petimages.entity';
 import { Species } from '../../species/entities/species.entity';
 import { Bread } from '../../breads/entities/bread.entity';
+import { PetCertifications } from './petcertifications.entity';
+import { PetDocs } from './petdocs.entity';
+import { Marketplace } from '../../marketplace/entities/marketplace.entity';
 
 @Entity()
 export class Pet {
@@ -34,6 +37,20 @@ export class Pet {
   species: Species;
   @ManyToOne(() => Bread, (bread) => bread.pets)
   bread: Bread;
+  @OneToMany(() => PetCertifications, (petCerts) => petCerts.pet)
+  petCertifications: string[];
+  @OneToMany(() => PetDocs, (petDocs) => petDocs.pet)
+  petDocuments: string[];
+  @ManyToOne(() => Marketplace, (market) => market.pets)
+  marketPlace: Marketplace;
+  @Column({ default: false })
+  isListedForAdoption: boolean;
+  @Column({ default: false })
+  isListedForSales: boolean;
+  @Column({ nullable: true })
+  sellPrice: number;
+  @Column({ default: false })
+  isNegotiable: boolean;
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamp',

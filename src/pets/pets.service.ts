@@ -52,6 +52,11 @@ export class PetsService {
         petPhotos: true,
         species: true,
         bread: true,
+        petDocuments: true,
+        petCertifications: true,
+        marketPlace: {
+          pets: true,
+        },
       },
       where: {
         user: { id: userId },
@@ -64,6 +69,43 @@ export class PetsService {
         pets: userPets,
       },
     };
+  }
+
+  async listMyPetForAdoption(userId: string, petId: string) {
+    const userPet = await this.petsRepository.findOne({
+      relations: {
+        petPhotos: true,
+        species: true,
+        bread: true,
+        petDocuments: true,
+        petCertifications: true,
+        user: {
+          marketPlace: true,
+        },
+        marketPlace: {
+          pets: true,
+        },
+      },
+      where: {
+        id: petId,
+        user: { id: userId },
+      },
+    });
+    if (userPet == null) {
+      throw new InternalServerErrorException();
+    } else {
+      userPet.marketPlace = userPet.user.marketPlace;
+      userPet.isListedForAdoption = true;
+      const linkage = await this.petsRepository.save(userPet);
+      if (linkage != null) {
+        return {
+          code: HttpStatus.OK,
+          message: 'Success',
+        };
+      } else {
+        throw new InternalServerErrorException();
+      }
+    }
   }
 
   findOne(id: number) {

@@ -11,6 +11,9 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { Pet } from '../pets/entities/pet.entity';
 import * as bcrypt from 'bcrypt';
+import { CheckPasswordDto } from './dto/checkpassword-dto';
+import { CreateMarketplaceDto } from '../marketplace/dto/create-marketplace.dto';
+import { Marketplace } from '../marketplace/entities/marketplace.entity';
 
 export type UserMock = any;
 
@@ -61,15 +64,19 @@ export class UsersService {
     return await this.usersRepository.findOne({
       where: { email: email, isDeleted: false },
       relations: {
+        marketPlace: {
+          pets: true,
+        },
         pets: {
           species: true,
           petPhotos: true,
           bread: true,
+          petCertifications: true,
+          petDocuments: true,
         },
       },
     });
   }
-
 
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
@@ -120,5 +127,102 @@ export class UsersService {
     } else {
       throw new UnauthorizedException();
     }
+  }
+
+  async updateProfile(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.usersRepository.findOne({
+      where: {
+        id: id,
+        isDeleted: false,
+        isVerified: true,
+      },
+    });
+    if (user != null) {
+      user.username = updateUserDto.username;
+      user.profileUrl = updateUserDto.profile_url;
+      const updated = await this.usersRepository.save(user);
+      if (updated != null) {
+        return {
+          code: HttpStatus.OK,
+          message: 'Successs',
+        };
+      } else {
+        throw new InternalServerErrorException();
+      }
+    } else {
+      throw new UnauthorizedException();
+    }
+  }
+
+  async checkPassword(id: string, checkPasswordDto: CheckPasswordDto) {
+    const user = await this.usersRepository.findOne({
+      where: {
+        id: id,
+        isDeleted: false,
+        isVerified: true,
+      },
+    });
+    if (bcrypt.compareSync(checkPasswordDto.password, user.password)) {
+      return {
+        code: HttpStatus.OK,
+        message: 'Success',
+      };
+    } else {
+      throw new UnauthorizedException();
+    }
+  }
+
+  async updatePassword(id: string, checkPasswordDto: CheckPasswordDto) {
+    const user = await this.usersRepository.findOne({
+      where: {
+        id: id,
+        isDeleted: false,
+        isVerified: true,
+      },
+    });
+    const salt = bcrypt.genSaltSync(10);
+    user.password = bcrypt.hashSync(checkPasswordDto.password, salt);
+    const updated = await this.usersRepository.save(user);
+    if (updated != null) {
+      return {
+        code: HttpStatus.OK,
+        message: 'Success',
+      };
+    } else {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async createAndLinkMarketPlace(userId: string, marketPlace: Marketplace) {
+    const user = await this.usersRepository.findOne({
+      where: {
+        id: userId,
+        isDeleted: false,
+        isVerified: true,
+      },
+    });
+    if (user != null) {
+      user.marketPlace = marketPlace;
+      const updated = await this.usersRepository.save(user);
+      if (updated != null) {
+        return {
+          code: HttpStatus.OK,
+          message: 'Success',
+        };
+      } else {
+        throw new InternalServerErrorException();
+      }
+    } else {
+      throw new UnauthorizedException();
+    }
+  }
+
+  async isVerified(id: string) {
+    const user = await this.usersRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
+    return user.isVerified;
   }
 }

@@ -21,6 +21,8 @@ export class BiometricService {
     const user = await this.userRepository.findOne({
       where: {
         id: userid,
+        isVerified: true,
+        isDeleted: false,
       },
     });
     if (user != null) {
@@ -62,6 +64,30 @@ export class BiometricService {
       };
     } else {
       throw new UnauthorizedException();
+    }
+  }
+
+  async removeBiometric(userid: string) {
+    const user = await this.userRepository.findOne({
+      where: {
+        id: userid,
+        isVerified: true,
+        isDeleted: false,
+      },
+    });
+    if (user != null) {
+      user.biometricToken = null;
+      const updatedUser = await this.userRepository.save(user);
+      if (updatedUser != null) {
+        return {
+          code: HttpStatus.CREATED,
+          message: 'Success',
+        };
+      } else {
+        throw new InternalServerErrorException();
+      }
+    } else {
+      throw new InternalServerErrorException();
     }
   }
 }

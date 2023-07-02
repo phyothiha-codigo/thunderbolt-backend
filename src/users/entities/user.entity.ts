@@ -4,10 +4,11 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
-} from 'typeorm';
+  OneToMany, JoinColumn, OneToOne
+} from "typeorm";
 import { Pet } from '../../pets/entities/pet.entity';
 import { Exclude } from 'class-transformer';
+import { Marketplace } from "../../marketplace/entities/marketplace.entity";
 
 @Entity()
 export class User {
@@ -35,6 +36,13 @@ export class User {
   biometricToken: string;
   @Column({ name: 'is_verified', default: false })
   isVerified: boolean;
+  @Column({ name: 'phone_number', nullable: true })
+  phoneNumber: string;
+  @Column({ name: 'address', nullable: true })
+  address: string;
+  @OneToOne(() => Marketplace, (marketPlace) => marketPlace.user) // specify inverse side as a second parameter
+  @JoinColumn()
+  marketPlace: Marketplace;
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamp',
