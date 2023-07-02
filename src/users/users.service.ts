@@ -112,7 +112,7 @@ export class UsersService {
       if (updated != null) {
         return {
           code: HttpStatus.OK,
-          message: 'Success',
+          message: 'Successs',
         };
       } else {
         throw new InternalServerErrorException();
